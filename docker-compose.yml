@@ -20,9 +20,9 @@ services:
     restart: always
   
   backendserver:
-    build: ./backend/
+    build: ./backend
     ports:
-           - "8080"
+           - "8080:8080"
     links:
            - "db"
     depends_on:
@@ -30,10 +30,10 @@ services:
     restart: always
 
   frontend:
-    build: ./frontend/
+    build: ./frontend
     links:
            - "backendserver"
     depends_on:
            - "backendserver"
     ports:
-           - "80:80"      
+           - "4200:80"      
