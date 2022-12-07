@@ -23,7 +23,6 @@ export class CrearCuentaComponent implements OnInit {
   clave = '';
   mensajeError = '';
   isLogged = false;
-  rol = '';
 
   constructor(
     private tokenService: TokenService,
@@ -39,8 +38,7 @@ export class CrearCuentaComponent implements OnInit {
   }
 
   onRegister(): void {
-    this.rol = '2';
-    this.nuevoUsuario = new NuevoUsuario(this.nombre, this.telefono, this.correo, this.clave, this.rol);
+    this.nuevoUsuario = new NuevoUsuario(this.nombre, this.telefono, this.correo, this.clave);
     this.authService.nuevo(this.nuevoUsuario).subscribe({
       next: (data) => {
         this.isRegister = true;

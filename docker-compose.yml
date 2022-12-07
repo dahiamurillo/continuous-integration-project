@@ -1,39 +1,37 @@
 version: '3.9'
 
 services:
-
-  db:
-    image: 'mysql/mysql-server:5.7'
+   mysqldb:
+    container_name: mysqldb
+    image: 'mysql:latest'
     ports:
-           - "3306:3306"
+      - "3307:3306"
     environment:
-           - MYSQL_ROOT_PASSWORD=HelpD3sk
-           - MYSQL_DATABASE=HelpDesk
-           - MYSQL_USER=root
-           - MYSQL_ROOT_HOST=%
+           MYSQL_DATABASE: helpdesk
+           MYSQL_ROOT_PASSWORD: HelpD3sk
+           MYSQL_PASSWORD: HelpD3sk
     volumes:
+           - .docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
            - ./my-datavolume:/var/lib/mysql
-    healthcheck:
-           test: ["CMD","mysqladmin","ping","-h","localhost"]
-           timeout: 20s
-           retries: 10
+   backendserver:
     restart: always
-  
-  backendserver:
+    container_name: springapp
     build: ./backend
     ports:
-           - "8080:8080"
-    links:
-           - "db"
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/helpdesk?useSSL=false
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "HelpD3sk"
     depends_on:
-           - "db"
-    restart: always
+      - mysqldb
 
-  frontend:
+
+
+   frontend:
     build: ./frontend
-    links:
-           - "backendserver"
-    depends_on:
-           - "backendserver"
     ports:
-           - "4200:80"      
+           - "4200:4200"
+    volumes:
+       - ./frontend:/usr/src/app/frontend
+       - /usr/src/app/frontend/node_modules      

@@ -9,7 +9,7 @@ COPY . .
 RUN npm install
 RUN npm run build --prod
 
+EXPOSE 4200
+
 CMD [ "npm", "start" ]
 
-FROM nginx:1.23-alpine
-COPY --from=node /app/dist/frontend /usr/share/nginx/html
